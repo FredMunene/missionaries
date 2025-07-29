@@ -644,7 +644,7 @@ function App() {
             </h2>
             
             <div className="instruction-text">
-              Enter your name and a custom message that will appear on your image.
+              Enter your name that will appear below your image.
             </div>
             
             <div className="input-group">
