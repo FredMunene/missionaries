@@ -4,6 +4,7 @@ import './App.css'
 function App() {
   const [userImage, setUserImage] = useState(null)
   const [userName, setUserName] = useState('')
+  const [userName, setUserName] = useState('')
   const [text, setText] = useState('')
   const [finalImage, setFinalImage] = useState(null)
   const [backgroundImage, setBackgroundImage] = useState(null)
@@ -169,6 +170,7 @@ function App() {
 
     // Measure text to get dimensions
     const textMetrics = ctx.measureText(userName)
+    const textMetrics = ctx.measureText(userName)
     const textWidth = textMetrics.width
     const textHeight = fontSize
 
@@ -182,6 +184,8 @@ function App() {
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
 
+    ctx.strokeText(userName, adjustedTextPosition.x, adjustedTextPosition.y)
+    ctx.fillText(userName, adjustedTextPosition.x, adjustedTextPosition.y)
     ctx.strokeText(userName, adjustedTextPosition.x, adjustedTextPosition.y)
     ctx.fillText(userName, adjustedTextPosition.x, adjustedTextPosition.y)
 
@@ -246,6 +250,7 @@ function App() {
 
   // Check if mouse is over the text
   const isMouseOverText = (mouseX, mouseY) => {
+    if (!userName.trim()) return false
     if (!userName.trim()) return false
 
     const canvas = editorCanvasRef.current
@@ -452,8 +457,12 @@ function App() {
   const generateComposite = () => {
     if (!userImage || !userName.trim()) {
       alert('Please upload an image and enter your name!')
+    if (!userImage || !userName.trim()) {
+      alert('Please upload an image and enter your name!')
       return
     }
+
+    setIsGenerating(true)
 
     setIsGenerating(true)
 
@@ -587,7 +596,7 @@ function App() {
     setFinalImage(null)
     setImagePosition({ x: 300, y: 210 })
     setImageSize({ width: 500, height: 500 })
-    setTextPosition({ x: 300, y: 1000 }) // Reset to default position
+    setTextPosition({ x: 350, y: 1000 }) // Reset to default position
     setIsDragging(false)
     setIsResizing(false)
     setIsDraggingText(false)
@@ -663,7 +672,7 @@ function App() {
                 </div>
               </div>
               
-              <div className="form-group">
+              {/* <div className="form-group">
                 <label className="form-label">Custom Message:</label>
                 <input
                   type="text"
@@ -676,7 +685,7 @@ function App() {
                 <div className={`character-count ${text.length > 40 ? 'warning' : ''} ${text.length >= 50 ? 'error' : ''}`}>
                   {text.length}/50 characters
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
 
