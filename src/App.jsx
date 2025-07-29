@@ -15,6 +15,11 @@ function App() {
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0 })
 
+  // Text editing state
+  const [textPosition, setTextPosition] = useState({ x: 0, y: 0 })
+  const [isDraggingText, setIsDraggingText] = useState(false)
+  const [textDragStart, setTextDragStart] = useState({ x: 0, y: 0 })
+
   const canvasRef = useRef(null)
   const editorCanvasRef = useRef(null)
   const fileInputRef = useRef(null)
@@ -28,6 +33,8 @@ function App() {
         // Initialize image position and size when image is loaded
         setImagePosition({ x: 250, y: 150 }) // Center-ish position
         setImageSize({ width: 150, height: 150 }) // Default size
+        // Initialize text position (bottom center by default)
+        setTextPosition({ x: 400, y: 500 }) // Will be adjusted based on canvas size
       }
       reader.readAsDataURL(file)
     }
@@ -112,6 +119,11 @@ function App() {
       if (!isDragging && !isResizing) {
         drawSelectionHandles(ctx)
       }
+
+      // Draw text if it exists
+      if (text.trim()) {
+        drawTextOnCanvas(ctx)
+      }
     }
     userImg.src = userImage
   }
@@ -145,6 +157,73 @@ function App() {
     })
   }
 
+  // Draw text on canvas with draggable indicator
+  const drawTextOnCanvas = (ctx) => {
+    const canvas = editorCanvasRef.current
+    if (!canvas) return
+
+    const fontSize = Math.max(16, canvas.height * 0.04)
+    ctx.font = `bold ${fontSize}px Arial`
+
+    // Measure text to get dimensions
+    const textMetrics = ctx.measureText(text)
+    const textWidth = textMetrics.width
+    const textHeight = fontSize
+
+    // Adjust text position if it's at default (0,0) to be at bottom center
+    let adjustedTextPosition = { ...textPosition }
+    if (textPosition.x === 0 && textPosition.y === 0) {
+      adjustedTextPosition = {
+        x: canvas.width / 2,
+        y: canvas.height - (canvas.height * 0.05)
+      }
+      setTextPosition(adjustedTextPosition)
+    }
+
+    // Draw text with outline for better visibility
+    ctx.fillStyle = 'white'
+    ctx.strokeStyle = 'black'
+    ctx.lineWidth = Math.max(2, fontSize * 0.1)
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+
+    ctx.strokeText(text, adjustedTextPosition.x, adjustedTextPosition.y)
+    ctx.fillText(text, adjustedTextPosition.x, adjustedTextPosition.y)
+
+    // Draw text selection indicator if not dragging image
+    if (!isDragging && !isResizing && !isDraggingText) {
+      drawTextSelectionIndicator(ctx, adjustedTextPosition, textWidth, textHeight)
+    }
+
+    // Reset text alignment
+    ctx.textAlign = 'left'
+    ctx.textBaseline = 'alphabetic'
+  }
+
+  // Draw selection indicator around text
+  const drawTextSelectionIndicator = (ctx, position, textWidth, textHeight) => {
+    const padding = 10
+    const rectX = position.x - textWidth/2 - padding
+    const rectY = position.y - textHeight/2 - padding
+    const rectWidth = textWidth + padding * 2
+    const rectHeight = textHeight + padding * 2
+
+    // Draw dashed rectangle around text
+    ctx.strokeStyle = 'blue'
+    ctx.lineWidth = 2
+    ctx.setLineDash([5, 5])
+    ctx.strokeRect(rectX, rectY, rectWidth, rectHeight)
+    ctx.setLineDash([])
+
+    // Draw drag handle
+    const handleSize = 8
+    ctx.fillStyle = 'blue'
+    ctx.strokeStyle = 'white'
+    ctx.lineWidth = 1
+    ctx.fillRect(position.x - handleSize/2, position.y - handleSize/2, handleSize, handleSize)
+    ctx.strokeRect(position.x - handleSize/2, position.y - handleSize/2, handleSize, handleSize)
+  }
+
   // Check if mouse is over a resize handle
   const getResizeHandle = (mouseX, mouseY) => {
     const handleSize = 12
@@ -170,6 +249,30 @@ function App() {
            mouseY >= imagePosition.y && mouseY <= imagePosition.y + imageSize.height
   }
 
+  // Check if mouse is over the text
+  const isMouseOverText = (mouseX, mouseY) => {
+    if (!text.trim()) return false
+
+    const canvas = editorCanvasRef.current
+    if (!canvas) return false
+
+    const fontSize = Math.max(16, canvas.height * 0.04)
+    const ctx = canvas.getContext('2d')
+    ctx.font = `bold ${fontSize}px Arial`
+    const textMetrics = ctx.measureText(text)
+    const textWidth = textMetrics.width
+    const textHeight = fontSize
+
+    const padding = 10
+    const rectX = textPosition.x - textWidth/2 - padding
+    const rectY = textPosition.y - textHeight/2 - padding
+    const rectWidth = textWidth + padding * 2
+    const rectHeight = textHeight + padding * 2
+
+    return mouseX >= rectX && mouseX <= rectX + rectWidth &&
+           mouseY >= rectY && mouseY <= rectY + rectHeight
+  }
+
   // Get mouse position relative to canvas
   const getMousePos = (canvas, event) => {
     const rect = canvas.getBoundingClientRect()
@@ -192,7 +295,7 @@ function App() {
     const resizeHandle = getResizeHandle(mousePos.x, mousePos.y)
 
     if (resizeHandle) {
-      // Start resizing
+      // Start resizing image
       setIsResizing(resizeHandle)
       setResizeStart({
         x: mousePos.x,
@@ -202,8 +305,15 @@ function App() {
         startX: imagePosition.x,
         startY: imagePosition.y
       })
+    } else if (isMouseOverText(mousePos.x, mousePos.y)) {
+      // Start dragging text
+      setIsDraggingText(true)
+      setTextDragStart({
+        x: mousePos.x - textPosition.x,
+        y: mousePos.y - textPosition.y
+      })
     } else if (isMouseOverImage(mousePos.x, mousePos.y)) {
-      // Start dragging
+      // Start dragging image
       setIsDragging(true)
       setDragStart({
         x: mousePos.x - imagePosition.x,
@@ -220,7 +330,16 @@ function App() {
 
     const mousePos = getMousePos(canvas, event)
 
-    if (isDragging) {
+    if (isDraggingText) {
+      // Update text position while dragging
+      const newX = Math.max(50, Math.min(canvas.width - 50, mousePos.x - textDragStart.x))
+      const newY = Math.max(20, Math.min(canvas.height - 20, mousePos.y - textDragStart.y))
+
+      setTextPosition({
+        x: newX,
+        y: newY
+      })
+    } else if (isDragging) {
       // Update image position while dragging
       const newX = Math.max(0, Math.min(canvas.width - imageSize.width, mousePos.x - dragStart.x))
       const newY = Math.max(0, Math.min(canvas.height - imageSize.height, mousePos.y - dragStart.y))
@@ -274,6 +393,8 @@ function App() {
         } else {
           canvas.style.cursor = 'ne-resize'
         }
+      } else if (isMouseOverText(mousePos.x, mousePos.y)) {
+        canvas.style.cursor = 'move'
       } else if (isMouseOverImage(mousePos.x, mousePos.y)) {
         canvas.style.cursor = 'move'
       } else {
@@ -286,6 +407,7 @@ function App() {
   const handleMouseUp = () => {
     setIsDragging(false)
     setIsResizing(false)
+    setIsDraggingText(false)
     const canvas = editorCanvasRef.current
     if (canvas) {
       canvas.style.cursor = 'default'
@@ -297,6 +419,7 @@ function App() {
     const handleGlobalMouseUp = () => {
       setIsDragging(false)
       setIsResizing(false)
+      setIsDraggingText(false)
       const canvas = editorCanvasRef.current
       if (canvas) {
         canvas.style.cursor = 'default'
@@ -305,7 +428,7 @@ function App() {
 
     const handleGlobalMouseMove = (event) => {
       const canvas = editorCanvasRef.current
-      if ((isDragging || isResizing) && canvas) {
+      if ((isDragging || isResizing || isDraggingText) && canvas) {
         // Check if mouse is still over the canvas
         const rect = canvas.getBoundingClientRect()
         if (event.clientX >= rect.left && event.clientX <= rect.right &&
@@ -315,7 +438,7 @@ function App() {
       }
     }
 
-    if (isDragging || isResizing) {
+    if (isDragging || isResizing || isDraggingText) {
       document.addEventListener('mouseup', handleGlobalMouseUp)
       document.addEventListener('mousemove', handleGlobalMouseMove)
     }
@@ -324,12 +447,12 @@ function App() {
       document.removeEventListener('mouseup', handleGlobalMouseUp)
       document.removeEventListener('mousemove', handleGlobalMouseMove)
     }
-  }, [isDragging, isResizing])
+  }, [isDragging, isResizing, isDraggingText])
 
-  // Redraw canvas when image position, size, or images change
+  // Redraw canvas when image position, size, text position, or images change
   useEffect(() => {
     drawEditorCanvas()
-  }, [imagePosition, imageSize, userImage, backgroundImage, isDragging, isResizing])
+  }, [imagePosition, imageSize, textPosition, text, userImage, backgroundImage, isDragging, isResizing, isDraggingText])
 
   const generateComposite = () => {
     if (!userImage || !text.trim()) {
@@ -414,21 +537,28 @@ function App() {
         ctx.lineWidth = Math.max(1, Math.min(userImgWidth, userImgHeight) * 0.02)
         ctx.stroke()
 
-        // Add text overlay at the bottom
+        // Add text overlay using the position from the editor
         const fontSize = Math.max(16, canvas.height * 0.04)
         ctx.font = `bold ${fontSize}px Arial`
         ctx.fillStyle = 'white'
         ctx.strokeStyle = 'black'
         ctx.lineWidth = Math.max(2, fontSize * 0.1)
         ctx.textAlign = 'center'
+        ctx.textBaseline = 'middle'
 
-        // Position text at bottom center with padding
-        const textX = canvas.width / 2
-        const textY = canvas.height - (canvas.height * 0.05)
+        // Use text position from editor, or default to bottom center
+        let finalTextX = textPosition.x
+        let finalTextY = textPosition.y
+
+        // If text position is still at default (0,0), use bottom center
+        if (textPosition.x === 0 && textPosition.y === 0) {
+          finalTextX = canvas.width / 2
+          finalTextY = canvas.height - (canvas.height * 0.05)
+        }
 
         // Add text with outline for better visibility
-        ctx.strokeText(text, textX, textY)
-        ctx.fillText(text, textX, textY)
+        ctx.strokeText(text, finalTextX, finalTextY)
+        ctx.fillText(text, finalTextX, finalTextY)
 
         // Reset text alignment
         ctx.textAlign = 'left'
@@ -486,8 +616,10 @@ function App() {
     setFinalImage(null)
     setImagePosition({ x: 250, y: 150 })
     setImageSize({ width: 150, height: 150 })
+    setTextPosition({ x: 0, y: 0 }) // Reset to default
     setIsDragging(false)
     setIsResizing(false)
+    setIsDraggingText(false)
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
@@ -520,6 +652,7 @@ function App() {
           <p className="instruction-text">
             • Click and drag the image to move it around<br/>
             • Drag the white corner handles to resize the image<br/>
+            • Click and drag the text (blue box) to reposition it<br/>
             • The image will appear as a circle in the final result
           </p>
           <div className="canvas-container">
