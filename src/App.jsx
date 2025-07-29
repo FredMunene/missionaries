@@ -123,7 +123,7 @@ function App() {
       }
 
       // Draw text if it exists
-      if (text.trim()) {
+      if (userName.trim()) {
         drawTextOnCanvas(ctx)
       }
     }
@@ -168,7 +168,7 @@ function App() {
     ctx.font = `bold ${fontSize}px Arial`
 
     // Measure text to get dimensions
-    const textMetrics = ctx.measureText(text)
+    const textMetrics = ctx.measureText(userName)
     const textWidth = textMetrics.width
     const textHeight = fontSize
 
@@ -182,8 +182,8 @@ function App() {
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
 
-    ctx.strokeText(text, adjustedTextPosition.x, adjustedTextPosition.y)
-    ctx.fillText(text, adjustedTextPosition.x, adjustedTextPosition.y)
+    ctx.strokeText(userName, adjustedTextPosition.x, adjustedTextPosition.y)
+    ctx.fillText(userName, adjustedTextPosition.x, adjustedTextPosition.y)
 
     // Draw text selection indicator if not dragging image
     if (!isDragging && !isResizing && !isDraggingText) {
@@ -246,7 +246,7 @@ function App() {
 
   // Check if mouse is over the text
   const isMouseOverText = (mouseX, mouseY) => {
-    if (!text.trim()) return false
+    if (!userName.trim()) return false
 
     const canvas = editorCanvasRef.current
     if (!canvas) return false
@@ -254,7 +254,7 @@ function App() {
     const fontSize = Math.max(16, canvas.height * 0.04)
     const ctx = canvas.getContext('2d')
     ctx.font = `bold ${fontSize}px Arial`
-    const textMetrics = ctx.measureText(text)
+    const textMetrics = ctx.measureText(userName)
     const textWidth = textMetrics.width
     const textHeight = fontSize
 
@@ -447,11 +447,11 @@ function App() {
   // Redraw canvas when image position, size, text position, or images change
   useEffect(() => {
     drawEditorCanvas()
-  }, [imagePosition, imageSize, textPosition, text, userImage, backgroundImage, isDragging, isResizing, isDraggingText])
+  }, [imagePosition, imageSize, textPosition, userName, userImage, backgroundImage, isDragging, isResizing, isDraggingText])
 
   const generateComposite = () => {
-    if (!userImage || !userName.trim() || !text.trim()) {
-      alert('Please upload an image, enter your name, and add some text!')
+    if (!userImage || !userName.trim()) {
+      alert('Please upload an image and enter your name!')
       return
     }
 
@@ -524,8 +524,8 @@ function App() {
         let finalTextY = textPosition.y
 
         // Add text with outline for better visibility
-        ctx.strokeText(text, finalTextX, finalTextY)
-        ctx.fillText(text, finalTextX, finalTextY)
+        ctx.strokeText(userName, finalTextX, finalTextY)
+        ctx.fillText(userName, finalTextX, finalTextY)
 
         // Reset text alignment
         ctx.textAlign = 'left'
@@ -715,7 +715,7 @@ function App() {
       <div className="action-section">
         <button
           onClick={generateComposite}
-          disabled={!userImage || !userName.trim() || !text.trim() || isGenerating}
+          disabled={!userImage || !userName.trim() || isGenerating}
           className="btn generate-btn"
         >
           {isGenerating && <span className="loading-spinner"></span>}
