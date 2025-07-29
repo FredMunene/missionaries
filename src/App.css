@@ -146,9 +146,13 @@
   font-size: 1rem;
   transition: all 0.3s ease;
   background: white;
+  color: #2d3748;
   box-sizing: border-box;
   max-width: 100%;
   min-width: 0;
+  -webkit-text-fill-color: #2d3748;
+  -webkit-opacity: 1;
+  opacity: 1;
 }
 
 .text-input:focus, .name-input:focus {
@@ -159,7 +163,9 @@
 }
 
 .text-input::placeholder, .name-input::placeholder {
-  color: #a0aec0;
+  color: #718096;
+  opacity: 1;
+  -webkit-text-fill-color: #718096;
 }
 
 .character-count {
@@ -382,6 +388,11 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
+    color: #1a202c !important;
+    background: white !important;
+    -webkit-text-fill-color: #1a202c !important;
+    -webkit-opacity: 1 !important;
+    opacity: 1 !important;
   }
 
   .form-label {
@@ -392,6 +403,12 @@
   .character-count {
     font-size: 0.75rem;
     margin-top: 0.25rem;
+  }
+
+  .text-input::placeholder, .name-input::placeholder {
+    color: #4a5568 !important;
+    opacity: 1 !important;
+    -webkit-text-fill-color: #4a5568 !important;
   }
 
   .action-section {
@@ -458,6 +475,12 @@
     max-width: 100%;
     box-sizing: border-box;
     min-width: 0;
+    color: #1a202c !important;
+    background: white !important;
+    -webkit-text-fill-color: #1a202c !important;
+    -webkit-opacity: 1 !important;
+    opacity: 1 !important;
+    font-weight: 500;
   }
 
   .form-label {
@@ -527,6 +550,13 @@
     max-width: 100%;
     box-sizing: border-box;
     min-width: 0;
+    color: #1a202c !important;
+    background: white !important;
+    -webkit-text-fill-color: #1a202c !important;
+    -webkit-opacity: 1 !important;
+    opacity: 1 !important;
+    font-weight: 500;
+    border: 2px solid #cbd5e0 !important;
   }
 
   .form-label {
