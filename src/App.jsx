@@ -33,7 +33,7 @@ function App() {
       reader.onload = (e) => {
         setUserImage(e.target.result)
         // Initialize image position and size when image is loaded
-        setImagePosition({ x: 300, y: 210 }) // 300px from left, 210px from top
+        setImagePosition({ x: 290, y: 220 }) // 300px from left, 210px from top
         setImageSize({ width: 500, height: 500 }) // Default size 500x500px
         // Initialize text position
         setTextPosition({ x: 550, y: 1070 }) // 300px from left, 1000px from top
