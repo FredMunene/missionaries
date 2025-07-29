@@ -599,7 +599,7 @@ function App() {
 
   return (
     <div className="app">
-      <h1>🎨 Image Overlay Creator</h1>
+      <h1>Ethereum@10 Kisumu</h1>
 
       <div className="section">
         <h2>
@@ -719,7 +719,7 @@ function App() {
           className="btn generate-btn"
         >
           {isGenerating && <span className="loading-spinner"></span>}
-          {isGenerating ? 'Generating...' : '✨ Generate Composite Image'}
+          {isGenerating ? 'Generating...' : '✨ Generate Final Image'}
         </button>
 
         <button onClick={resetApp} className="btn reset-btn" disabled={isGenerating}>
