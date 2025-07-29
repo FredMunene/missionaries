@@ -33,8 +33,8 @@ function App() {
         // Initialize image position and size when image is loaded
         setImagePosition({ x: 300, y: 210 }) // 300px from left, 210px from top
         setImageSize({ width: 500, height: 500 }) // Default size 500x500px
-        // Initialize text position (bottom center by default)
-        setTextPosition({ x: 400, y: 500 }) // Will be adjusted based on canvas size
+        // Initialize text position
+        setTextPosition({ x: 550, y: 1070 }) // 300px from left, 1000px from top
       }
       reader.readAsDataURL(file)
     }
@@ -162,7 +162,7 @@ function App() {
     const canvas = editorCanvasRef.current
     if (!canvas) return
 
-    const fontSize = Math.max(16, canvas.height * 0.04)
+    const fontSize = Math.max( 20, canvas.height * 0.04 + 2)
     ctx.font = `bold ${fontSize}px Arial`
 
     // Measure text to get dimensions
@@ -170,15 +170,8 @@ function App() {
     const textWidth = textMetrics.width
     const textHeight = fontSize
 
-    // Adjust text position if it's at default (0,0) to be at bottom center
+    // Use the current text position
     let adjustedTextPosition = { ...textPosition }
-    if (textPosition.x === 0 && textPosition.y === 0) {
-      adjustedTextPosition = {
-        x: canvas.width / 2,
-        y: canvas.height - (canvas.height * 0.05)
-      }
-      setTextPosition(adjustedTextPosition)
-    }
 
     // Draw text with outline for better visibility
     ctx.fillStyle = 'white'
@@ -514,7 +507,7 @@ function App() {
         // No borders in the final composite - clean circular image only
 
         // Add text overlay using the position from the editor
-        const fontSize = Math.max(16, canvas.height * 0.04)
+        const fontSize = Math.max(18, canvas.height * 0.04 + 2)
         ctx.font = `bold ${fontSize}px Arial`
         ctx.fillStyle = 'white'
         ctx.strokeStyle = 'black'
@@ -522,15 +515,9 @@ function App() {
         ctx.textAlign = 'center'
         ctx.textBaseline = 'middle'
 
-        // Use text position from editor, or default to bottom center
+        // Use text position from editor
         let finalTextX = textPosition.x
         let finalTextY = textPosition.y
-
-        // If text position is still at default (0,0), use bottom center
-        if (textPosition.x === 0 && textPosition.y === 0) {
-          finalTextX = canvas.width / 2
-          finalTextY = canvas.height - (canvas.height * 0.05)
-        }
 
         // Add text with outline for better visibility
         ctx.strokeText(text, finalTextX, finalTextY)
@@ -592,7 +579,7 @@ function App() {
     setFinalImage(null)
     setImagePosition({ x: 300, y: 210 })
     setImageSize({ width: 500, height: 500 })
-    setTextPosition({ x: 0, y: 0 }) // Reset to default
+    setTextPosition({ x: 300, y: 1000 }) // Reset to default position
     setIsDragging(false)
     setIsResizing(false)
     setIsDraggingText(false)
