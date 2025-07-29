@@ -3,6 +3,7 @@ import './App.css'
 
 function App() {
   const [userImage, setUserImage] = useState(null)
+  const [userName, setUserName] = useState('')
   const [text, setText] = useState('')
   const [finalImage, setFinalImage] = useState(null)
   const [backgroundImage, setBackgroundImage] = useState(null)
@@ -19,6 +20,7 @@ function App() {
   const [textPosition, setTextPosition] = useState({ x: 0, y: 0 })
   const [isDraggingText, setIsDraggingText] = useState(false)
   const [textDragStart, setTextDragStart] = useState({ x: 0, y: 0 })
+  const [isGenerating, setIsGenerating] = useState(false)
 
   const canvasRef = useRef(null)
   const editorCanvasRef = useRef(null)
@@ -448,10 +450,12 @@ function App() {
   }, [imagePosition, imageSize, textPosition, text, userImage, backgroundImage, isDragging, isResizing, isDraggingText])
 
   const generateComposite = () => {
-    if (!userImage || !text.trim()) {
-      alert('Please upload an image and add some text!')
+    if (!userImage || !userName.trim() || !text.trim()) {
+      alert('Please upload an image, enter your name, and add some text!')
       return
     }
+
+    setIsGenerating(true)
 
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
@@ -529,6 +533,7 @@ function App() {
         // Convert canvas to image
         const compositeDataURL = canvas.toDataURL('image/png')
         setFinalImage(compositeDataURL)
+        setIsGenerating(false)
 
         console.log('Composite image generated successfully with dimensions:', canvas.width, 'x', canvas.height)
       }
@@ -536,6 +541,7 @@ function App() {
       userImg.onerror = () => {
         console.error('Failed to load user image')
         alert('Failed to load your uploaded image. Please try again.')
+        setIsGenerating(false)
       }
 
       userImg.src = userImage
@@ -544,6 +550,7 @@ function App() {
     baseImg.onerror = () => {
       console.error('Failed to load base image: /background.png')
       alert('Failed to load the background image. Please check if background.png exists.')
+      setIsGenerating(false)
 
       // Fallback: create a colored background
       canvas.width = 800
@@ -575,6 +582,7 @@ function App() {
 
   const resetApp = () => {
     setUserImage(null)
+    setUserName('')
     setText('')
     setFinalImage(null)
     setImagePosition({ x: 300, y: 210 })
@@ -583,6 +591,7 @@ function App() {
     setIsDragging(false)
     setIsResizing(false)
     setIsDraggingText(false)
+    setIsGenerating(false)
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
@@ -590,18 +599,35 @@ function App() {
 
   return (
     <div className="app">
-      <h1>Image Overlay Creator</h1>
+      <h1>🎨 Image Overlay Creator</h1>
 
-      <div className="upload-section">
-        <h2>1. Upload Your Picture</h2>
-        <p className="instruction-text">Upload your image and then drag, resize, and position it on the canvas below</p>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          onChange={handleImageUpload}
-          className="file-input"
-        />
+      <div className="section">
+        <h2>
+          <span className="section-number">1</span>
+          Upload Your Picture
+        </h2>
+        
+        <div className="image-requirements">
+          <strong>📏 For best results:</strong> Upload a square image (500x500 pixels recommended). 
+          Your image will be displayed as a circle in the final result.
+        </div>
+        
+        <div className="instruction-text">
+          Upload your image and then drag, resize, and position it on the canvas below. 
+          The editor will help you get the perfect positioning before generating your final image.
+        </div>
+        
+        <div className="form-group">
+          <label className="form-label">Choose your image file:</label>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="file-input"
+          />
+        </div>
+        
         {userImage && (
           <div className="preview">
             <img src={userImage} alt="User upload" className="user-image-preview" />
@@ -610,62 +636,115 @@ function App() {
       </div>
 
       {userImage && backgroundImage && (
-        <div className="editor-section">
-          <h2>2. Position and Resize Your Image</h2>
-          <p className="instruction-text">
-            • Click and drag the image to move it around<br/>
-            • Drag the white corner handles to resize the image<br/>
-            • Click and drag the text (blue box) to reposition it<br/>
-            • The image will appear as a circle in the final result
-          </p>
+        <>
+          <div className="section">
+            <h2>
+              <span className="section-number">2</span>
+              Add Your Information
+            </h2>
+            
+            <div className="instruction-text">
+              Enter your name and a custom message that will appear on your image.
+            </div>
+            
+            <div className="input-group">
+              <div className="form-group">
+                <label className="form-label">Your Name:</label>
+                <input
+                  type="text"
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  placeholder="Enter your name..."
+                  className="name-input"
+                  maxLength={30}
+                />
+                <div className={`character-count ${userName.length > 25 ? 'warning' : ''} ${userName.length >= 30 ? 'error' : ''}`}>
+                  {userName.length}/30 characters
+                </div>
+              </div>
+              
+              <div className="form-group">
+                <label className="form-label">Custom Message:</label>
+                <input
+                  type="text"
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  placeholder="Enter your message..."
+                  className="text-input"
+                  maxLength={50}
+                />
+                <div className={`character-count ${text.length > 40 ? 'warning' : ''} ${text.length >= 50 ? 'error' : ''}`}>
+                  {text.length}/50 characters
+                </div>
+              </div>
+            </div>
+          </div>
 
-          <div className="text-section">
-            <h2>3. Add Your Text</h2>
-            <p className="instruction-text">Your text will appear at the bottom center of the image</p>
-            <input
-              type="text"
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              placeholder="Enter your text here..."
-              className="text-input"
-              maxLength={50}
-            />
+          <div className="section">
+            <h2>
+              <span className="section-number">3</span>
+              Position and Resize Your Image
+            </h2>
+            
+            <div className="editor-instructions">
+              <strong>How to use the editor:</strong>
+              <ul>
+                <li>Click and drag the image to move it around</li>
+                <li>Drag the white corner handles to resize the image</li>
+                <li>Click and drag the text (blue box) to reposition it</li>
+                <li>Your image will appear as a perfect circle in the final result</li>
+              </ul>
+            </div>
+            
+            <div className="canvas-container">
+              <canvas
+                ref={editorCanvasRef}
+                className="editor-canvas"
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
+                style={{ userSelect: 'none' }}
+              />
+            </div>
           </div>
-          <div className="canvas-container">
-            <canvas
-              ref={editorCanvasRef}
-              className="editor-canvas"
-              onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onMouseUp={handleMouseUp}
-              onMouseLeave={handleMouseUp}
-              style={{ userSelect: 'none' }}
-            />
-          </div>
-        </div>
+        </>
       )}
 
 
       <div className="action-section">
         <button
           onClick={generateComposite}
-          disabled={!userImage || !text.trim()}
-          className="generate-btn"
+          disabled={!userImage || !userName.trim() || !text.trim() || isGenerating}
+          className="btn generate-btn"
         >
-          Generate Composite Image
+          {isGenerating && <span className="loading-spinner"></span>}
+          {isGenerating ? 'Generating...' : '✨ Generate Composite Image'}
         </button>
 
-        <button onClick={resetApp} className="reset-btn">
-          Reset
+        <button onClick={resetApp} className="btn reset-btn" disabled={isGenerating}>
+          🔄 Reset All
         </button>
       </div>
 
       {finalImage && (
-        <div className="result-section">
-          <h2>4. Your Composite Image</h2>
+        <div className="section">
+          <div className="success-message">
+            🎉 Your composite image has been generated successfully!
+          </div>
+          
+          <h2>
+            <span className="section-number">4</span>
+            Your Composite Image
+          </h2>
+          
           <img src={finalImage} alt="Final composite" className="final-image" />
-          <button onClick={downloadImage} className="download-btn">
-            Download Image
+          
+          <div style={{ textAlign: 'center' }}>
+            <button onClick={downloadImage} className="btn download-btn">
+              📥 Download Image
+            </button>
+          </div>
           </button>
         </div>
       )}
