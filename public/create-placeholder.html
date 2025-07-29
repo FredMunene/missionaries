@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Placeholder</title>
+</head>
+<body>
+    <canvas id="canvas" width="800" height="600"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Create a gradient background
+        const gradient = ctx.createLinearGradient(0, 0, 800, 600);
+        gradient.addColorStop(0, '#4a90e2');
+        gradient.addColorStop(1, '#357abd');
+        
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, 800, 600);
+        
+        // Add some decorative elements
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+        for (let i = 0; i < 20; i++) {
+            ctx.beginPath();
+            ctx.arc(Math.random() * 800, Math.random() * 600, Math.random() * 50 + 10, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+        
+        // Add text
+        ctx.font = 'bold 48px Arial';
+        ctx.fillStyle = 'white';
+        ctx.textAlign = 'center';
+        ctx.fillText('Cheryl Attending', 400, 250);
+        
+        ctx.font = '24px Arial';
+        ctx.fillText('Base Image for Overlay', 400, 300);
+        
+        // Convert to blob and download
+        canvas.toBlob(function(blob) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'cheryl-attending.png';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+    </script>
+</body>
+</html>

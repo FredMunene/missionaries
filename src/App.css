@@ -1,0 +1,142 @@
+.app {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+.app h1 {
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.upload-section, .text-section, .action-section, .result-section {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+}
+
+.upload-section h2, .text-section h2, .result-section h2 {
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+.instruction-text {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+.file-input {
+  padding: 0.5rem;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  background-color: white;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.preview {
+  margin-top: 1rem;
+}
+
+.user-image-preview {
+  max-width: 150px;
+  max-height: 150px;
+  border: 2px solid #ddd;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.text-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 0.75rem;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  margin: 0 auto;
+  display: block;
+}
+
+.text-input:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+.action-section {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.generate-btn, .reset-btn, .download-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.generate-btn {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.generate-btn:hover:not(:disabled) {
+  background-color: #357abd;
+}
+
+.generate-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.reset-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.reset-btn:hover {
+  background-color: #d32f2f;
+}
+
+.download-btn {
+  background-color: #4caf50;
+  color: white;
+  margin-top: 1rem;
+}
+
+.download-btn:hover {
+  background-color: #45a049;
+}
+
+.final-image {
+  max-width: 100%;
+  height: auto;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .app {
+    padding: 1rem;
+  }
+
+  .action-section {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .generate-btn, .reset-btn {
+    width: 100%;
+    max-width: 300px;
+  }
+}
