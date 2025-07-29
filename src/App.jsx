@@ -46,7 +46,7 @@ function App() {
     img.onload = () => {
       setBackgroundImage(img)
     }
-    img.src = '/background.jpg'
+    img.src = '/background.png'
   }, [])
 
   // Draw the editor canvas
@@ -463,7 +463,7 @@ function App() {
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
 
-    // Load and draw the base image (background.jpg) as background
+    // Load and draw the base image (background.png) as background
     const baseImg = new Image()
     baseImg.crossOrigin = 'anonymous' // Handle CORS if needed
 
@@ -477,7 +477,7 @@ function App() {
       // Clear canvas first
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      // Draw the background.jpg as the full background
+      // Draw the background.png as the full background
       ctx.drawImage(baseImg, 0, 0)
 
       // Now load and overlay the user's image on top using editor position and size
@@ -511,31 +511,7 @@ function App() {
         // Restore context
         ctx.restore()
 
-        // Add circular border around user image for better visibility
-        ctx.beginPath()
-        ctx.arc(
-          userImgX + userImgWidth/2,
-          userImgY + userImgHeight/2,
-          Math.min(userImgWidth, userImgHeight)/2,
-          0,
-          2 * Math.PI
-        )
-        ctx.strokeStyle = 'white'
-        ctx.lineWidth = Math.max(2, Math.min(userImgWidth, userImgHeight) * 0.04)
-        ctx.stroke()
-
-        // Add a second border for extra emphasis
-        ctx.beginPath()
-        ctx.arc(
-          userImgX + userImgWidth/2,
-          userImgY + userImgHeight/2,
-          Math.min(userImgWidth, userImgHeight)/2 + ctx.lineWidth/2,
-          0,
-          2 * Math.PI
-        )
-        ctx.strokeStyle = 'black'
-        ctx.lineWidth = Math.max(1, Math.min(userImgWidth, userImgHeight) * 0.02)
-        ctx.stroke()
+        // No borders in the final composite - clean circular image only
 
         // Add text overlay using the position from the editor
         const fontSize = Math.max(16, canvas.height * 0.04)
@@ -579,8 +555,8 @@ function App() {
     }
 
     baseImg.onerror = () => {
-      console.error('Failed to load base image: /background.jpg')
-      alert('Failed to load the background image. Please check if background.jpg exists.')
+      console.error('Failed to load base image: /background.png')
+      alert('Failed to load the background image. Please check if background.png exists.')
 
       // Fallback: create a colored background
       canvas.width = 800
@@ -596,8 +572,8 @@ function App() {
       ctx.textAlign = 'left'
     }
 
-    // Load the background.jpg from the public folder
-    baseImg.src = '/background.jpg'
+    // Load the background.png from the public folder
+    baseImg.src = '/background.png'
     console.log('Loading base image from:', baseImg.src)
   }
 
@@ -655,6 +631,19 @@ function App() {
             • Click and drag the text (blue box) to reposition it<br/>
             • The image will appear as a circle in the final result
           </p>
+
+          <div className="text-section">
+            <h2>3. Add Your Text</h2>
+            <p className="instruction-text">Your text will appear at the bottom center of the image</p>
+            <input
+              type="text"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder="Enter your text here..."
+              className="text-input"
+              maxLength={50}
+            />
+          </div>
           <div className="canvas-container">
             <canvas
               ref={editorCanvasRef}
@@ -669,18 +658,6 @@ function App() {
         </div>
       )}
 
-      <div className="text-section">
-        <h2>3. Add Your Text</h2>
-        <p className="instruction-text">Your text will appear at the bottom center of the image</p>
-        <input
-          type="text"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Enter your text here..."
-          className="text-input"
-          maxLength={50}
-        />
-      </div>
 
       <div className="action-section">
         <button
