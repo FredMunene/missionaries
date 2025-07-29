@@ -28,7 +28,7 @@ function App() {
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
 
-    // Load and draw the base image (cheryl-attending.png) as background
+    // Load and draw the base image (background.jpg) as background
     const baseImg = new Image()
     baseImg.crossOrigin = 'anonymous' // Handle CORS if needed
 
@@ -42,7 +42,7 @@ function App() {
       // Clear canvas first
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      // Draw the cheryl-attending.png as the full background (no scaling needed)
+      // Draw the background.jpg as the full background (no scaling needed)
       ctx.drawImage(baseImg, 0, 0)
 
       // Now load and overlay the user's image on top
@@ -121,8 +121,8 @@ function App() {
     }
 
     baseImg.onerror = () => {
-      console.error('Failed to load base image: /cheryl-attending.png')
-      alert('Failed to load the background image. Please check if cheryl-attending.png exists.')
+      console.error('Failed to load base image: /background.jpg')
+      alert('Failed to load the background image. Please check if background.jpg exists.')
 
       // Fallback: create a colored background
       ctx.fillStyle = '#4a90e2'
@@ -136,8 +136,8 @@ function App() {
       ctx.textAlign = 'left'
     }
 
-    // Load the cheryl-attending.png from the public folder
-    baseImg.src = '/cheryl-attending.png'
+    // Load the background.jpg from the public folder
+    baseImg.src = '/background.jpg'
     console.log('Loading base image from:', baseImg.src)
   }
 
@@ -165,7 +165,7 @@ function App() {
 
       <div className="upload-section">
         <h2>1. Upload Your Picture</h2>
-        <p className="instruction-text">Your image will appear as a circular overlay in the center, on top of the cheryl-attending.png background</p>
+        <p className="instruction-text">Your image will appear as a circular overlay in the center, on top of the background.jpg background</p>
         <input
           ref={fileInputRef}
           type="file"
