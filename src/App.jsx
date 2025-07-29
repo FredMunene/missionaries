@@ -4,7 +4,6 @@ import './App.css'
 function App() {
   const [userImage, setUserImage] = useState(null)
   const [userName, setUserName] = useState('')
-  const [userName, setUserName] = useState('')
   const [text, setText] = useState('')
   const [finalImage, setFinalImage] = useState(null)
   const [backgroundImage, setBackgroundImage] = useState(null)
