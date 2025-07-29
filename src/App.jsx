@@ -745,7 +745,6 @@ function App() {
               📥 Download Image
             </button>
           </div>
-          </button>
         </div>
       )}
 
