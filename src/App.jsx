@@ -168,7 +168,7 @@ function App() {
     ctx.font = `bold ${fontSize}px Arial`
 
     // Measure text to get dimensions
-    const textMetrics = ctx.measureText(userName)
+    
     const textMetrics = ctx.measureText(userName)
     const textWidth = textMetrics.width
     const textHeight = fontSize
