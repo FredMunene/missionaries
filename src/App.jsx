@@ -730,15 +730,15 @@ function App() {
       {finalImage && (
         <div className="section">
           <div className="success-message">
-            🎉 Your composite image has been generated successfully!
+            🎉 Your image has been generated successfully!
           </div>
           
           <h2>
             <span className="section-number">4</span>
-            Your Composite Image
+            Your Final Image
           </h2>
           
-          <img src={finalImage} alt="Final composite" className="final-image" />
+          <img src={finalImage} alt="Final Image" className="final-image" />
           
           <div style={{ textAlign: 'center' }}>
             <button onClick={downloadImage} className="btn download-btn">

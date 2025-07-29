@@ -63,6 +63,9 @@
 
 .form-group {
   margin-bottom: 1.5rem;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .form-label {
@@ -83,6 +86,9 @@
   transition: all 0.3s ease;
   text-align: center;
   font-size: 1rem;
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .file-input:hover {
@@ -140,6 +146,9 @@
   font-size: 1rem;
   transition: all 0.3s ease;
   background: white;
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .text-input:focus, .name-input:focus {
@@ -351,6 +360,40 @@
     gap: 1rem;
   }
 
+  .form-group {
+    margin-bottom: 1rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .file-input {
+    padding: 1.5rem 1rem;
+    font-size: 0.9rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    word-wrap: break-word;
+  }
+
+  .text-input, .name-input {
+    padding: 1rem;
+    font-size: 1rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .form-label {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .character-count {
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+  }
+
   .action-section {
     flex-direction: column;
     align-items: center;
@@ -378,9 +421,121 @@
   .section {
     padding: 1rem;
     border-radius: 12px;
+    margin: 0.75rem 0;
   }
 
   .app h1 {
     font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-number {
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
+  }
+
+  .file-input {
+    padding: 1.25rem 0.75rem;
+    font-size: 0.85rem;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .text-input, .name-input {
+    padding: 0.875rem;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .form-label {
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .character-count {
+    font-size: 0.7rem;
+    margin-top: 0.2rem;
+  }
+
+  .instruction-text {
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+
+  .btn {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.9rem;
+    max-width: 280px;
+  }
+
+  .preview {
+    margin-top: 0.75rem;
+  }
+
+  .user-image-preview {
+    max-width: 120px;
+    max-height: 120px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+  .app {
+    padding: 0.25rem;
+  }
+
+  .section {
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+  }
+
+  .app h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .section h2 {
+    font-size: 1.1rem;
+  }
+
+  .file-input {
+    padding: 1rem 0.5rem;
+    font-size: 0.8rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .text-input, .name-input {
+    padding: 0.75rem;
+    font-size: 0.85rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .form-label {
+    font-size: 0.85rem;
+  }
+
+  .btn {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.85rem;
+    max-width: 260px;
   }
 }
