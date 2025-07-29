@@ -32,7 +32,7 @@ function App() {
         setUserImage(e.target.result)
         // Initialize image position and size when image is loaded
         setImagePosition({ x: 250, y: 150 }) // Center-ish position
-        setImageSize({ width: 150, height: 150 }) // Default size
+        setImageSize({ width: 500, height: 500 }) // Default size 500x500px
         // Initialize text position (bottom center by default)
         setTextPosition({ x: 400, y: 500 }) // Will be adjusted based on canvas size
       }
@@ -591,7 +591,7 @@ function App() {
     setText('')
     setFinalImage(null)
     setImagePosition({ x: 250, y: 150 })
-    setImageSize({ width: 150, height: 150 })
+    setImageSize({ width: 500, height: 500 })
     setTextPosition({ x: 0, y: 0 }) // Reset to default
     setIsDragging(false)
     setIsResizing(false)
