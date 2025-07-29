@@ -168,7 +168,6 @@ function App() {
     ctx.font = `bold ${fontSize}px Arial`
 
     // Measure text to get dimensions
-    
     const textMetrics = ctx.measureText(userName)
     const textWidth = textMetrics.width
     const textHeight = fontSize
@@ -183,8 +182,6 @@ function App() {
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
 
-    ctx.strokeText(userName, adjustedTextPosition.x, adjustedTextPosition.y)
-    ctx.fillText(userName, adjustedTextPosition.x, adjustedTextPosition.y)
     ctx.strokeText(userName, adjustedTextPosition.x, adjustedTextPosition.y)
     ctx.fillText(userName, adjustedTextPosition.x, adjustedTextPosition.y)
 
@@ -249,7 +246,6 @@ function App() {
 
   // Check if mouse is over the text
   const isMouseOverText = (mouseX, mouseY) => {
-    if (!userName.trim()) return false
     if (!userName.trim()) return false
 
     const canvas = editorCanvasRef.current
@@ -456,12 +452,8 @@ function App() {
   const generateComposite = () => {
     if (!userImage || !userName.trim()) {
       alert('Please upload an image and enter your name!')
-    if (!userImage || !userName.trim()) {
-      alert('Please upload an image and enter your name!')
       return
     }
-
-    setIsGenerating(true)
 
     setIsGenerating(true)
 
